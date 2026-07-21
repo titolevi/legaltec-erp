@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -63,21 +64,14 @@ return new class extends Migration
         });
 
         // Actualizar tickets con nuevos campos
-        Schema::table('tickets', function (Blueprint $table) {
-            // Renombrar y reorganizar
-            $table->foreignId('caja_id')->nullable()->after('tenant_id')->constrained()->nullOnDelete();
-            $table->index('caja_id');
-
-            // Nuevos campos comunes
-            $table->string('divisa', 3)->default('PEN')->after('monto');
-            $table->string('tipo_transaccion', 20)->nullable()->after('divisa'); // efectivo, transferencia
-            $table->string('titular_cuenta', 255)->nullable()->after('tipo_transaccion');
-            $table->string('numero_cuenta', 100)->nullable()->after('titular_cuenta');
-            $table->string('banco', 100)->nullable()->after('numero_cuenta');
-
-            // Campos extra para movilidad (JSON)
-            $table->json('campos_extra')->nullable()->after('observaciones');
-        });
+        // Usar DB raw para evitar problema de SQLite con default values
+        DB::statement('ALTER TABLE tickets ADD COLUMN caja_id INTEGER NULL REFERENCES cajas(id)');
+        DB::statement('ALTER TABLE tickets ADD COLUMN divisa VARCHAR(3) DEFAULT "PEN"');
+        DB::statement('ALTER TABLE tickets ADD COLUMN tipo_transaccion VARCHAR(20) NULL');
+        DB::statement('ALTER TABLE tickets ADD COLUMN titular_cuenta VARCHAR(255) NULL');
+        DB::statement('ALTER TABLE tickets ADD COLUMN numero_cuenta VARCHAR(100) NULL');
+        DB::statement('ALTER TABLE tickets ADD COLUMN banco VARCHAR(100) NULL');
+        DB::statement('ALTER TABLE tickets ADD COLUMN campos_extra TEXT NULL');
     }
 
     public function down(): void
