@@ -9,28 +9,22 @@ use Illuminate\Http\Request;
 
 class TenantController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            abort_unless(auth()->user()->esSuperAdmin(), 403);
-            return $next($request);
-        });
-    }
-
     public function index()
     {
+        $this->authorizeAdmin();
         $tenants = Tenant::withCount('users')->orderBy('name')->paginate(20);
         return view('admin.tenants.index', compact('tenants'));
     }
 
     public function create()
     {
+        $this->authorizeAdmin();
         return view('admin.tenants.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorizeAdmin();
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:50|unique:tenants,slug|alpha_dash',
@@ -46,11 +40,13 @@ class TenantController extends Controller
 
     public function edit(Tenant $tenant)
     {
+        $this->authorizeAdmin();
         return view('admin.tenants.edit', compact('tenant'));
     }
 
     public function update(Request $request, Tenant $tenant)
     {
+        $this->authorizeAdmin();
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:50|alpha_dash|unique:tenants,slug,' . $tenant->id,
@@ -67,6 +63,7 @@ class TenantController extends Controller
 
     public function destroy(Tenant $tenant)
     {
+        $this->authorizeAdmin();
         $tenant->update(['activo' => false]);
         return redirect()->route('admin.tenants')
             ->with('message', "⛔ Tenant {$tenant->name} desactivado.");
@@ -74,6 +71,7 @@ class TenantController extends Controller
 
     public function enter(Tenant $tenant)
     {
+        $this->authorizeAdmin();
         session(['impersonating_tenant_id' => $tenant->id]);
         return redirect()->route('dashboard')
             ->with('message', "🔀 Has entrado a: {$tenant->name}");
@@ -81,8 +79,14 @@ class TenantController extends Controller
 
     public function exit()
     {
+        $this->authorizeAdmin();
         session()->forget('impersonating_tenant_id');
         return redirect()->route('admin.tenants')
             ->with('message', "🔙 Has vuelto al panel global de Legaltec.");
+    }
+
+    private function authorizeAdmin(): void
+    {
+        abort_unless(auth()->check() && auth()->user()->esSuperAdmin(), 403);
     }
 }
