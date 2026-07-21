@@ -30,10 +30,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tenants/salir', [\App\Http\Controllers\Admin\TenantController::class, 'exit'])->name('tenants.exit');
     });
 
-    // Tickets
-    Route::get('/tickets/crear', \App\Livewire\Tickets\CreateTicket::class)->name('tickets.crear');
-    Route::get('/tickets/aprobar', \App\Livewire\Tickets\ApproveTicket::class)->name('tickets.aprobar');
-    Route::get('/tickets/cajero', \App\Livewire\Tickets\CashierDashboard::class)->name('tickets.cajero');
+    // Theme toggle
+    Route::post('/tema', function (\Illuminate\Http\Request $request) {
+        $tema = $request->validate(['tema' => 'required|in:claro,oscuro']);
+        auth()->user()->setPreferencia('tema', $tema['tema']);
+        return response()->json(['status' => 'ok']);
+    })->name('tema.toggle');
 });
 
 Route::view('profile', 'profile')
