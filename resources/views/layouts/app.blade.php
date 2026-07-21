@@ -36,7 +36,7 @@
                 <div class="flex items-center space-x-4">
                     @auth
                     <!-- Dark mode toggle -->
-                    <button @click="tema = (tema === 'claro' ? 'oscuro' : 'claro'); fetch('/tema', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }, body: JSON.stringify({tema: tema === 'claro' ? 'oscuro' : 'claro'}) });"
+                    <button @click="nuevoTema = (tema === 'claro' ? 'oscuro' : 'claro'); tema = nuevoTema; fetch('/tema', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }, body: JSON.stringify({tema: nuevoTema}) });"
                             class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                             x-cloak
                             :title="tema === 'claro' ? 'Modo oscuro' : 'Modo claro'"
