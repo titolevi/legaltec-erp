@@ -65,6 +65,11 @@ class Tenant extends Model
         return $this->hasMany(\App\Models\AuditLog::class);
     }
 
+    public function cajas()
+    {
+        return $this->hasMany(\App\Models\Caja::class);
+    }
+
     public function estaSuspendido(): bool
     {
         return $this->status === 'suspended';

@@ -36,6 +36,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/{user}/editar', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+        // Cajas
+        Route::get('/cajas', [\App\Http\Controllers\Admin\CajaController::class, 'index'])->name('cajas');
+        Route::get('/cajas/crear', [\App\Http\Controllers\Admin\CajaController::class, 'create'])->name('cajas.create');
+        Route::post('/cajas', [\App\Http\Controllers\Admin\CajaController::class, 'store'])->name('cajas.store');
+        Route::get('/cajas/{caja}/editar', [\App\Http\Controllers\Admin\CajaController::class, 'edit'])->name('cajas.edit');
+        Route::put('/cajas/{caja}', [\App\Http\Controllers\Admin\CajaController::class, 'update'])->name('cajas.update');
+        Route::delete('/cajas/{caja}', [\App\Http\Controllers\Admin\CajaController::class, 'destroy'])->name('cajas.destroy');
     });
 
     // Theme toggle

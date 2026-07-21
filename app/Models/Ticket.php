@@ -13,6 +13,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'numero',
+        'caja_id',
         'cliente_id',
         'asunto_id',
         'codigo_asunto',
@@ -21,12 +22,17 @@ class Ticket extends Model
         'distrito',
         'facturable',
         'monto',
-        'moneda',
+        'divisa',
+        'tipo_transaccion',
+        'titular_cuenta',
+        'numero_cuenta',
+        'banco',
         'ejecutado_por',
         'autorizador_id',
         'estado',
         'usuario_id',
         'observaciones',
+        'campos_extra',
         'tenant_id',
     ];
 
@@ -36,6 +42,7 @@ class Ticket extends Model
             'fecha_diligencia' => 'date',
             'facturable' => 'boolean',
             'monto' => 'decimal:2',
+            'campos_extra' => 'array',
         ];
     }
 
@@ -67,6 +74,11 @@ class Ticket extends Model
     public function autorizador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'autorizador_id');
+    }
+
+    public function caja(): BelongsTo
+    {
+        return $this->belongsTo(Caja::class);
     }
 
     public function scopePendientes($query)

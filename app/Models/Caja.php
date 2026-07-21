@@ -5,27 +5,24 @@ namespace App\Models;
 use App\Models\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Asunto extends Model
+class Caja extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'cliente_id',
-        'codigo',
-        'nombre',
-        'abogado_responsable',
-        'id_time_manager',
-        'activo',
-        'tenant_id',
+        'tenant_id', 'nombre', 'slug', 'descripcion', 'tipo',
+        'moneda', 'monto_maximo', 'color', 'icono', 'activo',
     ];
 
     protected function casts(): array
     {
         return [
             'activo' => 'boolean',
+            'monto_maximo' => 'decimal:2',
         ];
     }
 
@@ -39,13 +36,31 @@ class Asunto extends Model
         });
     }
 
-    public function cliente(): BelongsTo
+    public function tenant(): BelongsTo
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function autorizadores(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'caja_autorizadores')
+            ->withPivot('limite_aprobacion')
+            ->withTimestamps();
+    }
+
+    public function cajeros(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'caja_cajeros')
+            ->withTimestamps();
     }
 
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function esMovilidad(): bool
+    {
+        return $this->tipo === 'movilidad';
     }
 }
