@@ -51,7 +51,7 @@ class User extends Authenticatable
      */
     protected static function booted(): void
     {
-        static::addGlobalScope(new TenantScope);
+        // TenantScope NO se aplica a User (evita bucle infinito)
     }
 
     // ─── Relaciones ───────────────────────────────────────
