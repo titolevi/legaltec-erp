@@ -7,7 +7,7 @@ use App\Livewire\Tickets\ApproveTicket;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/login');
+    return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {
