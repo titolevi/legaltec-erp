@@ -55,7 +55,8 @@ class TenantController extends Controller
             'slug' => 'required|string|max:50|alpha_dash|unique:tenants,slug,' . $tenant->id,
             'ruc' => 'nullable|string|size:11|unique:tenants,ruc,' . $tenant->id,
             'email' => 'nullable|email|max:255',
-            'activo' => 'boolean',
+            'status' => 'required|in:active,suspended,trial,cancelled',
+            'plan' => 'required|in:trial,starter,professional,enterprise',
         ]);
 
         $tenant->update($data);
