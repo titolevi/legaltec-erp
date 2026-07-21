@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SystemHealth extends Model
 {
+    protected $table = 'system_health';
+
     protected $fillable = ['tenant_id', 'tipo', 'estado', 'valor', 'mensaje'];
 
     public function tenant(): BelongsTo
