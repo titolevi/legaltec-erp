@@ -3,22 +3,22 @@
 @section('content')
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">✏️ Editar Usuario</h1>
-    <p class="text-gray-500 dark:text-gray-400">{{ $targetUser->name }}</p>
+    <p class="text-gray-500 dark:text-gray-400">{{ $user->name }}</p>
 </div>
 
-<form method="POST" action="{{ route('admin.users.update', $targetUser) }}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-4 max-w-xl">
+<form method="POST" action="{{ route('admin.users.update', $user) }}" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-4 max-w-xl">
     @csrf
     @method('PUT')
 
     <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre completo</label>
-        <input type="text" name="name" value="{{ old('name', $targetUser->name) }}" required
+        <input type="text" name="name" value="{{ old('name', $user->name) }}" required
             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
     </div>
 
     <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-        <input type="email" name="email" value="{{ old('email', $targetUser->email) }}" required
+        <input type="email" name="email" value="{{ old('email', $user->email) }}" required
             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
     </div>
 
@@ -30,7 +30,7 @@
 
     <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Teléfono</label>
-        <input type="text" name="telefono" value="{{ old('telefono', $targetUser->telefono) }}"
+        <input type="text" name="telefono" value="{{ old('telefono', $user->telefono) }}"
             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
     </div>
 
@@ -39,7 +39,7 @@
         <select name="rol" required
             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             @foreach($roles as $value => $label)
-                <option value="{{ $value }}" {{ old('rol', $targetUser->rol) == $value ? 'selected' : '' }}>{{ $label }}</option>
+                <option value="{{ $value }}" {{ old('rol', $user->rol) == $value ? 'selected' : '' }}>{{ $label }}</option>
             @endforeach
         </select>
     </div>
@@ -51,7 +51,7 @@
             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Legaltec (sin tenant)</option>
             @foreach($tenants as $t)
-                <option value="{{ $t->id }}" {{ old('tenant_id', $targetUser->tenant_id) == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
+                <option value="{{ $t->id }}" {{ old('tenant_id', $user->tenant_id) == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
             @endforeach
         </select>
     </div>
@@ -59,7 +59,7 @@
 
     <div>
         <label class="inline-flex items-center">
-            <input type="checkbox" name="activo" value="1" {{ old('activo', $targetUser->activo) ? 'checked' : '' }}
+            <input type="checkbox" name="activo" value="1" {{ old('activo', $user->activo) ? 'checked' : '' }}
                 class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Usuario activo</span>
         </label>

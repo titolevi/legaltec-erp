@@ -13,10 +13,9 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
 
-        // Super admin ve todos o filtra por tenant
-        if ($user->esSuperAdmin()) {
+        if ($authUser->esSuperAdmin()) {
             $query = User::with('tenant');
             if ($request->filled('tenant_id')) {
                 $query->where('tenant_id', $request->tenant_id);
@@ -27,9 +26,8 @@ class UserController extends Controller
             $users = $query->orderBy('name')->paginate(20);
             $tenants = Tenant::where('status', 'active')->orderBy('name')->get();
         } else {
-            // Admin del tenant solo ve su tenant
-            abort_unless($user->esAdminTenant(), 403);
-            $users = User::where('tenant_id', $user->tenant_id)
+            abort_unless($authUser->esAdminTenant(), 403);
+            $users = User::where('tenant_id', $authUser->tenant_id)
                 ->orderBy('name')
                 ->paginate(20);
             $tenants = collect();
@@ -40,10 +38,9 @@ class UserController extends Controller
 
     public function create()
     {
-        $user = auth()->user();
-
-        $roles = $this->getAvailableRoles($user);
-        $tenants = ($user->esSuperAdmin())
+        $authUser = auth()->user();
+        $roles = $this->getAvailableRoles($authUser);
+        $tenants = ($authUser->esSuperAdmin())
             ? Tenant::where('status', 'active')->orderBy('name')->get()
             : collect();
 
@@ -52,25 +49,24 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
 
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => ['required', Password::defaults()],
-            'rol' => 'required|string|in:' . implode(',', $this->getAvailableRoles($user)->keys()->toArray()),
+            'rol' => 'required|string|in:' . implode(',', $this->getAvailableRoles($authUser)->keys()->toArray()),
             'telefono' => 'nullable|string|max:20',
         ];
 
-        // Super admin puede asignar tenant; tenant admin usa el suyo
-        if ($user->esSuperAdmin()) {
+        if ($authUser->esSuperAdmin()) {
             $rules['tenant_id'] = 'nullable|exists:tenants,id';
         }
 
         $data = $request->validate($rules);
 
-        if (!$user->esSuperAdmin()) {
-            $data['tenant_id'] = $user->tenant_id;
+        if (!$authUser->esSuperAdmin()) {
+            $data['tenant_id'] = $authUser->tenant_id;
         }
 
         $data['password'] = Hash::make($data['password']);
@@ -82,36 +78,34 @@ class UserController extends Controller
             ->with('message', "✅ Usuario {$newUser->name} creado en {$tenantName} como {$newUser->rol}.");
     }
 
-    public function edit(User $targetUser)
+    public function edit(User $user)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
 
-        // Validar acceso
-        if (!$user->esSuperAdmin() && $user->tenant_id !== $targetUser->tenant_id) {
+        if (!$authUser->esSuperAdmin() && $authUser->tenant_id !== $user->tenant_id) {
             abort(403);
         }
 
-        $roles = $this->getAvailableRoles($user);
-        $tenants = ($user->esSuperAdmin())
+        $roles = $this->getAvailableRoles($authUser);
+        $tenants = ($authUser->esSuperAdmin())
             ? Tenant::where('status', 'active')->orderBy('name')->get()
             : collect();
 
-        return view('admin.users.edit', compact('targetUser', 'roles', 'tenants'));
+        return view('admin.users.edit', compact('user', 'roles', 'tenants'));
     }
 
-    public function update(Request $request, User $targetUser)
+    public function update(Request $request, User $user)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
 
-        // Validar acceso
-        if (!$user->esSuperAdmin() && $user->tenant_id !== $targetUser->tenant_id) {
+        if (!$authUser->esSuperAdmin() && $authUser->tenant_id !== $user->tenant_id) {
             abort(403);
         }
 
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $targetUser->id,
-            'rol' => 'required|string|in:' . implode(',', $this->getAvailableRoles($user)->keys()->toArray()),
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'rol' => 'required|string|in:' . implode(',', $this->getAvailableRoles($authUser)->keys()->toArray()),
             'telefono' => 'nullable|string|max:20',
             'activo' => 'boolean',
         ];
@@ -120,7 +114,7 @@ class UserController extends Controller
             $rules['password'] = ['required', Password::defaults()];
         }
 
-        if ($user->esSuperAdmin()) {
+        if ($authUser->esSuperAdmin()) {
             $rules['tenant_id'] = 'nullable|exists:tenants,id';
         }
 
@@ -132,38 +126,35 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        if (!$user->esSuperAdmin()) {
+        if (!$authUser->esSuperAdmin()) {
             unset($data['tenant_id']);
         }
 
-        $targetUser->update($data);
+        $user->update($data);
 
         return redirect()->route('admin.users')
-            ->with('message', "✅ Usuario {$targetUser->name} actualizado.");
+            ->with('message', "✅ Usuario {$user->name} actualizado.");
     }
 
-    public function destroy(User $targetUser)
+    public function destroy(User $user)
     {
-        $user = auth()->user();
+        $authUser = auth()->user();
 
-        if (!$user->esSuperAdmin() && $user->tenant_id !== $targetUser->tenant_id) {
+        if (!$authUser->esSuperAdmin() && $authUser->tenant_id !== $user->tenant_id) {
             abort(403);
         }
 
-        if ($targetUser->id === $user->id) {
+        if ($user->id === $authUser->id) {
             return back()->with('message', '❌ No puedes eliminarte a ti mismo.');
         }
 
-        $targetUser->update(['activo' => false]);
+        $user->update(['activo' => false]);
 
         return redirect()->route('admin.users')
-            ->with('message', "⛔ Usuario {$targetUser->name} desactivado.");
+            ->with('message', "⛔ Usuario {$user->name} desactivado.");
     }
 
-    /**
-     * Roles disponibles según el rol del usuario autenticado.
-     */
-    private function getAvailableRoles($user): \Illuminate\Support\Collection
+    private function getAvailableRoles($authUser): \Illuminate\Support\Collection
     {
         $allRoles = collect([
             'super_admin' => 'Super Admin (Legaltec)',
@@ -175,11 +166,10 @@ class UserController extends Controller
             'usuario' => 'Usuario',
         ]);
 
-        if ($user->esSuperAdmin()) {
-            return $allRoles; // Super admin puede crear cualquier rol
+        if ($authUser->esSuperAdmin()) {
+            return $allRoles;
         }
 
-        // Admin del tenant solo puede crear roles dentro de su tenant
         return $allRoles->only(['admin', 'autorizador', 'cajero', 'usuario']);
     }
 }
