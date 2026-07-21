@@ -28,6 +28,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/tenants/{tenant}', [\App\Http\Controllers\Admin\TenantController::class, 'destroy'])->name('tenants.destroy');
         Route::get('/tenants/{tenant}/entrar', [\App\Http\Controllers\Admin\TenantController::class, 'enter'])->name('tenants.enter');
         Route::get('/tenants/salir', [\App\Http\Controllers\Admin\TenantController::class, 'exit'])->name('tenants.exit');
+
+        // Users
+        Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
+        Route::get('/users/crear', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/editar', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
     });
 
     // Theme toggle
