@@ -37,6 +37,9 @@
                         <a href="{{ route('admin.users') }}" class="px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.users*') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300' }}">
                             👥 Usuarios
                         </a>
+                        <a href="{{ route('admin.cajas') }}" class="px-3 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.cajas*') ? 'bg-indigo-50 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300' }}">
+                            💰 Cajas
+                        </a>
                         @endif
                     </div>
                     @endauth
