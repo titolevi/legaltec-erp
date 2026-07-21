@@ -9,6 +9,14 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Logout (Breeze/Volt no define ruta con nombre)
+    Route::post('/logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
+
     // Tickets
     Route::get('/tickets/crear', \App\Livewire\Tickets\CreateTicket::class)->name('tickets.crear');
     Route::get('/tickets/aprobar', \App\Livewire\Tickets\ApproveTicket::class)->name('tickets.aprobar');
