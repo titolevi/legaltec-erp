@@ -139,22 +139,59 @@ CAJA MOVILIDADES (ej: Caja Best Rent)
 
 ### 2.4 Integración con Clientes/Asuntos
 
+#### Tabla CLIENTES
+
+| Campo | Tipo | Ejemplo |
+|---|---|---|
+| **Código** | VARCHAR(6) | "000001" |
+| **Nombre** | VARCHAR(255) | "Viera Abogados" |
+| **Contacto** | VARCHAR(255) | "Juan Pérez - jperez@viera.pe" |
+| **RUC** | VARCHAR(11) | "20123456789" |
+| **Dirección fiscal** | TEXT | "Av. Pardo 123, Miraflores" |
+| **PO Box** | VARCHAR(50) | "PO Box 1234" |
+| **Socio responsable** | VARCHAR(255) | "Dr. Carlos Viera" |
+| **Abogado asignado** | VARCHAR(255) | "María Tanta" |
+| **Activo** | BOOLEAN | Sí/No |
+| **Auditoría** | created_at, updated_at, deleted_at | |
+
+#### Tabla ASUNTOS
+
+| Campo | Tipo | Ejemplo |
+|---|---|---|
+| **Código cliente** | FK → clientes.codigo | "000001" |
+| **Código asunto** | VARCHAR(20) | "000001-0001" |
+| **Nombre** | VARCHAR(255) | "Relación con el cliente" |
+| **Abogado responsable** | VARCHAR(255) | "Santos Viamonte" |
+| **ID Time Manager** | INT (nullable) | 3244 ← para API futura |
+| **Activo** | BOOLEAN | Sí/No |
+| **Auditoría** | created_at, updated_at, deleted_at | |
+
+#### Relación
+
 ```
-CLIENTES                          ASUNTOS
-┌─────────────────────┐          ┌────────────────────────────┐
-│ id: 1               │          │ id: 1                      │
-│ codigo: "000001"    │◄────────┤ cliente_id: 1              │
-│ nombre: "Viera"     │  1:N    │ codigo: "000001-0001"      │
-│ ruc: "20123456789"  │          │ nombre: "Relación cliente" │
-│ activo: true        │          │ id_time_manager: 3244      │ ◄── Para API
-└─────────────────────┘          │ activo: true               │
-                                  └────────────────────────────┘
+CLIENTES (código: "000001") ──1:N──► ASUNTOS (código_cliente: "000001")
+                                        │
+                                        ├── "000001-0001 - Relación con el cliente"
+                                        ├── "000001-0002 - Consultoría"
+                                        └── "000001-0003 - PE-Zelig CF.10-2023"
 ```
 
-**Campos clave:**
-- `asuntos.id_time_manager` → ID del asunto en Time Manager (para sincronización API)
-- `asuntos.codigo` → "000001-0001" (formato legible)
-- `clientes.codigo` → "000001" (6 dígitos)
+#### Visual en el ERP
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  CLIENTES                                                 [+ Nuevo] │
+├──────┬──────────────┬────────────┬──────────┬──────────┬───────────┤
+│ Cód. │ Nombre       │ RUC        │ Socio    │ Abogado  │ Estado    │
+├──────┼──────────────┼────────────┼──────────┼──────────┼───────────┤
+│000001│ Viera Abog.  │20123456789 │C. Viera  │M. Tanta  │ ✅ Activo │
+│      │              │            │          │          │           │
+│      ├─ ASUNTOS     │            │          │          │           │
+│      │ 0001 Relación cliente    │ C. Viera │ ✅ Activo │           │
+│      │ 0002 Consultoría         │ S. Viam. │ ✅ Activo │           │
+│      │ 0003 PE-Zelig CF.10-2023 │ S. Viam. │ ✅ Activo │           │
+└──────┴──────────────┴────────────┴──────────┴──────────┴───────────┘
+```
 
 ### 2.5 Precios y Planes
 
