@@ -31,8 +31,12 @@ class TenantScope implements Scope
 
         $user = auth()->user();
 
-        // Super admin ve todo
+        // Super admin ve todo, pero puede impersonar un tenant
         if ($user->esSuperAdmin()) {
+            $impersonatingId = session('impersonating_tenant_id');
+            if ($impersonatingId) {
+                $builder->where('tenant_id', $impersonatingId);
+            }
             return;
         }
 
