@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin → Solo super_admin
     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/tenants', [\App\Http\Controllers\Admin\TenantController::class, 'index'])->name('tenants');
         Route::get('/tenants/crear', [\App\Http\Controllers\Admin\TenantController::class, 'create'])->name('tenants.create');
         Route::post('/tenants', [\App\Http\Controllers\Admin\TenantController::class, 'store'])->name('tenants.store');

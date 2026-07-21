@@ -44,4 +44,34 @@ class Tenant extends Model
     {
         return $this->belongsToMany(User::class, 'support_assignments');
     }
+
+    public function modules()
+    {
+        return $this->hasMany(\App\Models\TenantModule::class);
+    }
+
+    public function usage()
+    {
+        return $this->hasMany(\App\Models\TenantUsage::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(\App\Models\TenantInvoice::class);
+    }
+
+    public function auditLogs()
+    {
+        return $this->hasMany(\App\Models\AuditLog::class);
+    }
+
+    public function estaSuspendido(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    public function moduloActivo(string $slug): bool
+    {
+        return $this->modules()->where('module_slug', $slug)->where('activo', true)->exists();
+    }
 }
