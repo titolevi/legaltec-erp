@@ -25,8 +25,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tenants/{tenant}/editar', [\App\Http\Controllers\Admin\TenantController::class, 'edit'])->name('tenants.edit');
         Route::put('/tenants/{tenant}', [\App\Http\Controllers\Admin\TenantController::class, 'update'])->name('tenants.update');
         Route::delete('/tenants/{tenant}', [\App\Http\Controllers\Admin\TenantController::class, 'destroy'])->name('tenants.destroy');
-        Route::post('/tenants/{tenant}/entrar', [\App\Http\Controllers\Admin\TenantController::class, 'enter'])->name('tenants.enter');
-        Route::post('/tenants/salir', [\App\Http\Controllers\Admin\TenantController::class, 'exit'])->name('tenants.exit');
+        Route::get('/tenants/{tenant}/entrar', [\App\Http\Controllers\Admin\TenantController::class, 'enter'])->name('tenants.enter');
+        Route::get('/tenants/salir', [\App\Http\Controllers\Admin\TenantController::class, 'exit'])->name('tenants.exit');
     });
 
     // Tickets
