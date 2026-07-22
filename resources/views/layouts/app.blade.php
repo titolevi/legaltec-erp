@@ -156,11 +156,7 @@
 
     <main id="main-content" class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            @if (session('message'))
-                <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg" role="alert">
-                    {{ session('message') }}
-                </div>
-            @endif
+            <x-alert />
             @yield('content')
             {{ $slot ?? '' }}
         </div>

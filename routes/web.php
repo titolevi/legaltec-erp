@@ -7,7 +7,9 @@ Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->name('dashboard')->middleware(['auth']);
 
     // Logout (Breeze/Volt no define ruta con nombre)
     Route::post('/logout', function () {
@@ -17,8 +19,8 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/');
     })->name('logout');
 
-    // Admin → Solo super_admin
-    Route::prefix('admin')->name('admin.')->group(function () {
+    // Admin → Solo super_admin y admin
+    Route::prefix('admin')->name('admin.')->middleware(['role:super_admin,admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/tenants', [\App\Http\Controllers\Admin\TenantController::class, 'index'])->name('tenants');
         Route::get('/tenants/crear', [\App\Http\Controllers\Admin\TenantController::class, 'create'])->name('tenants.create');
