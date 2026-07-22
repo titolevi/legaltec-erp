@@ -91,7 +91,7 @@ class TenantController extends Controller
         ]);
 
         session(['impersonating_tenant_id' => $tenant->id]);
-        return redirect()->route('dashboard')
+        return redirect()->route('admin.dashboard')
             ->with('message', "🔀 Has entrado a: {$tenant->name}");
     }
 
