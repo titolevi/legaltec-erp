@@ -65,7 +65,7 @@ return new class extends Migration
 
         // Actualizar tickets con nuevos campos
         // Usar DB raw para evitar problema de SQLite con default values
-        DB::statement('ALTER TABLE tickets ADD COLUMN caja_id INTEGER NULL REFERENCES cajas(id)');
+        DB::statement('ALTER TABLE tickets ADD COLUMN caja_id INTEGER NULL');
         DB::statement('ALTER TABLE tickets ADD COLUMN divisa VARCHAR(3) DEFAULT "PEN"');
         DB::statement('ALTER TABLE tickets ADD COLUMN tipo_transaccion VARCHAR(20) NULL');
         DB::statement('ALTER TABLE tickets ADD COLUMN titular_cuenta VARCHAR(255) NULL');
