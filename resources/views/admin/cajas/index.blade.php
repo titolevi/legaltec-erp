@@ -1,14 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<x-alert />
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">💰 Cajas</h1>
     <p class="text-gray-500 dark:text-gray-400">Gestión de cajas del tenant</p>
 </div>
 
-@if(session('message'))
-    <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">{{ session('message') }}</div>
-@endif
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -68,6 +66,5 @@
     </table>
     @if($cajas->hasPages())
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">{{ $cajas->links() }}</div>
-    @endif
 </div>
 @endsection

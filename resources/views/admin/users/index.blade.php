@@ -1,14 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<x-alert />
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">👥 Gestión de Usuarios</h1>
     <p class="text-gray-500 dark:text-gray-400">Administra usuarios y roles del sistema</p>
 </div>
 
-@if(session('message'))
-    <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">{{ session('message') }}</div>
-@endif
 
 <!-- Filtros (solo super_admin) -->
 @if(auth()->user()->esSuperAdmin() && $tenants->isNotEmpty())
@@ -34,7 +32,6 @@
         <a href="{{ route('admin.users') }}" class="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg text-sm hover:bg-gray-400 dark:hover:bg-gray-500">Limpiar</a>
     </form>
 </div>
-@endif
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -50,7 +47,6 @@
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Rol</th>
                 @if(auth()->user()->esSuperAdmin())
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tenant</th>
-                @endif
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Estado</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Último acceso</th>
                 <th class="px-4 py-3"></th>
@@ -68,13 +64,11 @@
                         @elseif($u->rol == 'admin') bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200
                         @elseif($u->rol == 'autorizador') bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
                         @elseif($u->rol == 'cajero') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
-                        @else bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 @endif">
                         {{ ucfirst(str_replace('_', ' ', $u->rol)) }}
                     </span>
                 </td>
                 @if(auth()->user()->esSuperAdmin())
                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $u->tenant?->name ?? '—' }}</td>
-                @endif
                 <td class="px-4 py-3">
                     <span class="px-2 py-1 text-xs rounded-full {{ $u->activo ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' }}">
                         {{ $u->activo ? 'Activo' : 'Inactivo' }}
@@ -99,6 +93,5 @@
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         {{ $users->links() }}
     </div>
-    @endif
 </div>
 @endsection

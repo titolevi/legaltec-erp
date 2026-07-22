@@ -1,16 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<x-alert />
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">🏢 Panel de Tenants</h1>
     <p class="text-gray-500 dark:text-gray-400">Gestión de Tenants — Legaltec SaaS</p>
 </div>
 
-@if(session('message'))
-    <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">
-        {{ session('message') }}
-    </div>
-@endif
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -44,7 +40,6 @@
                     <span class="px-2 py-1 text-xs rounded-full
                         @if($tenant->status == 'active') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
                         @elseif($tenant->status == 'suspended') bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200
-                        @else bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 @endif">
                         {{ ucfirst($tenant->status) }}
                     </span>
                 </td>
@@ -73,6 +68,5 @@
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         {{ $tenants->links() }}
     </div>
-    @endif
 </div>
 @endsection
