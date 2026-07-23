@@ -15,48 +15,34 @@ return new class extends Migration
             }
         });
 
-        // Agregar campos de autorizacion a tickets existentes
-        Schema::table('tickets', function (Blueprint $table) {
-            if (!Schema::hasColumn('tickets', 'status')) {
-                $table->string('status', 20)->default('pendiente')->after('monto');
-            }
-            if (!Schema::hasColumn('tickets', 'moneda')) {
-                $table->string('moneda', 3)->default('PEN')->after('monto');
-            }
-            if (!Schema::hasColumn('tickets', 'autorizador_id')) {
-                $table->foreignId('autorizador_id')->nullable()->constrained('users')->nullOnDelete()->after('status');
-            }
-            if (!Schema::hasColumn('tickets', 'autorizado_at')) {
-                $table->timestamp('autorizado_at')->nullable()->after('autorizador_id');
-            }
-            if (!Schema::hasColumn('tickets', 'motivo_rechazo')) {
-                $table->text('motivo_rechazo')->nullable()->after('autorizado_at');
-            }
-            if (!Schema::hasColumn('tickets', 'cajero_id')) {
-                $table->foreignId('cajero_id')->nullable()->constrained('users')->nullOnDelete()->after('motivo_rechazo');
-            }
-            if (!Schema::hasColumn('tickets', 'atendido_at')) {
-                $table->timestamp('atendido_at')->nullable()->after('cajero_id');
-            }
-            if (!Schema::hasColumn('tickets', 'notas')) {
-                $table->text('notas')->nullable()->after('atendido_at');
-            }
-        });
+        // Crear tabla de solicitudes (tickets de caja - separada de tickets existentes)
+        if (!Schema::hasTable('solicitudes')) {
+            Schema::create('solicitudes', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('caja_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->string('concepto');
+                $table->decimal('monto', 12, 2);
+                $table->string('moneda', 3)->default('PEN');
+                $table->string('status', 20)->default('pendiente');
+                $table->foreignId('autorizador_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->timestamp('autorizado_at')->nullable();
+                $table->text('motivo_rechazo')->nullable();
+                $table->foreignId('cajero_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->timestamp('atendido_at')->nullable();
+                $table->text('notas')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('solicitudes');
         Schema::table('cajas', function (Blueprint $table) {
             $table->dropColumn('require_authorization');
-        });
-
-        Schema::table('tickets', function (Blueprint $table) {
-            $columns = ['status', 'moneda', 'autorizador_id', 'autorizado_at', 'motivo_rechazo', 'cajero_id', 'atendido_at', 'notas'];
-            foreach ($columns as $col) {
-                if (Schema::hasColumn('tickets', $col)) {
-                    $table->dropColumn($col);
-                }
-            }
         });
     }
 };

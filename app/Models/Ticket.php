@@ -11,6 +11,8 @@ class Ticket extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'solicitudes';
+
     protected $fillable = [
         'caja_id', 'tenant_id', 'user_id', 'concepto', 'monto', 'moneda',
         'status', 'autorizador_id', 'autorizado_at', 'motivo_rechazo',
