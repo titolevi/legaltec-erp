@@ -12,37 +12,17 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'numero',
-        'caja_id',
-        'cliente_id',
-        'asunto_id',
-        'codigo_asunto',
-        'fecha_diligencia',
-        'detalle',
-        'distrito',
-        'facturable',
-        'monto',
-        'divisa',
-        'tipo_transaccion',
-        'titular_cuenta',
-        'numero_cuenta',
-        'banco',
-        'ejecutado_por',
-        'autorizador_id',
-        'estado',
-        'usuario_id',
-        'observaciones',
-        'campos_extra',
-        'tenant_id',
+        'caja_id', 'tenant_id', 'user_id', 'concepto', 'monto', 'moneda',
+        'status', 'autorizador_id', 'autorizado_at', 'motivo_rechazo',
+        'cajero_id', 'atendido_at', 'notas',
     ];
 
     protected function casts(): array
     {
         return [
-            'fecha_diligencia' => 'date',
-            'facturable' => 'boolean',
             'monto' => 'decimal:2',
-            'campos_extra' => 'array',
+            'autorizado_at' => 'datetime',
+            'atendido_at' => 'datetime',
         ];
     }
 
@@ -51,29 +31,9 @@ class Ticket extends Model
         static::addGlobalScope(new TenantScope);
         static::creating(function ($model) {
             if (auth()->check() && !$model->tenant_id) {
-                $model->tenant_id = auth()->user()->tenant_id;
+                $model->tenant_id = auth()->user()->tenant_id ?? session('impersonating_tenant_id');
             }
         });
-    }
-
-    public function cliente(): BelongsTo
-    {
-        return $this->belongsTo(Cliente::class);
-    }
-
-    public function asunto(): BelongsTo
-    {
-        return $this->belongsTo(Asunto::class);
-    }
-
-    public function usuario(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'usuario_id');
-    }
-
-    public function autorizador(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'autorizador_id');
     }
 
     public function caja(): BelongsTo
@@ -81,19 +41,23 @@ class Ticket extends Model
         return $this->belongsTo(Caja::class);
     }
 
-    public function scopePendientes($query)
+    public function user(): BelongsTo
     {
-        return $query->where('estado', 'pendiente');
+        return $this->belongsTo(User::class);
     }
 
-    public function scopeAprobados($query)
+    public function autorizador(): BelongsTo
     {
-        return $query->where('estado', 'aprobado');
+        return $this->belongsTo(User::class, 'autorizador_id');
     }
 
-    public function scopePorAutorizar($query, $userId)
+    public function cajero(): BelongsTo
     {
-        return $query->where('autorizador_id', $userId)
-                     ->where('estado', 'pendiente');
+        return $this->belongsTo(User::class, 'cajero_id');
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

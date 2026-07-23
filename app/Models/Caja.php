@@ -15,7 +15,7 @@ class Caja extends Model
 
     protected $fillable = [
         'tenant_id', 'nombre', 'slug', 'descripcion', 'tipo',
-        'moneda', 'monto_maximo', 'color', 'icono', 'activo',
+        'moneda', 'monto_maximo', 'require_authorization', 'color', 'icono', 'activo',
     ];
 
     protected function casts(): array

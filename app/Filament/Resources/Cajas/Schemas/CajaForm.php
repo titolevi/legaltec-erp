@@ -25,6 +25,7 @@ class CajaForm
                     ->options(['PEN' => 'S/ PEN', 'USD' => '$ USD'])
                     ->required(),
                 TextInput::make('monto_maximo')->label('Monto maximo por ticket')->numeric()->nullable()->helperText('Limite maximo que puede tener un ticket en esta caja'),
+                Toggle::make('require_authorization')->label('Requiere autorizacion')->helperText('Si se activa, los tickets necesitan aprobacion de un autorizador antes de pasar al cajero'),
                 Toggle::make('activo')->label('Activa')->default(true),
             ]);
     }
