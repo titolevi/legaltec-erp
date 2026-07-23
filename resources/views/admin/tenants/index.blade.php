@@ -7,7 +7,6 @@
     <p class="text-gray-500 dark:text-gray-400">Gestión de Tenants — Legaltec SaaS</p>
 </div>
 
-
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Tenants registrados</h2>
@@ -37,11 +36,16 @@
                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $tenant->users_count }} / {{ $tenant->max_users }}</td>
                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">S/ {{ number_format($tenant->mrr, 2) }}</td>
                 <td class="px-4 py-3">
-                    <span class="px-2 py-1 text-xs rounded-full
-                        @if($tenant->status == 'active') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
-                        @elseif($tenant->status == 'suspended') bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200
-                        @else bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
-                        @endif">
+                    @php
+                        $statusColors = [
+                            'active' => 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+                            'suspended' => 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
+                            'trial' => 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200',
+                            'cancelled' => 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200',
+                        ];
+                        $color = $statusColors[$tenant->status] ?? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
+                    @endphp
+                    <span class="px-2 py-1 text-xs rounded-full {{ $color }}">
                         {{ ucfirst($tenant->status) }}
                     </span>
                 </td>
@@ -70,5 +74,6 @@
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         {{ $tenants->links() }}
     </div>
+    @endif
 </div>
 @endsection
