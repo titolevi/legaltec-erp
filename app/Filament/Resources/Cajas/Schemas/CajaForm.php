@@ -24,7 +24,7 @@ class CajaForm
                 Select::make('moneda')->label('Moneda')
                     ->options(['PEN' => 'S/ PEN', 'USD' => '$ USD'])
                     ->required(),
-                TextInput::make('monto_maximo')->label('Monto maximo')->numeric()->nullable(),
+                TextInput::make('monto_maximo')->label('Monto maximo por ticket')->numeric()->nullable()->helperText('Limite maximo que puede tener un ticket en esta caja'),
                 Toggle::make('activo')->label('Activa')->default(true),
             ]);
     }

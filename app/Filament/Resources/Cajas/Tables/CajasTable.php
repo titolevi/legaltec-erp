@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Cajas\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -18,13 +16,11 @@ class CajasTable
                 TextColumn::make('nombre')->label('Nombre')->sortable()->searchable(),
                 TextColumn::make('tipo')->label('Tipo')->badge(),
                 TextColumn::make('moneda')->label('Moneda'),
+                TextColumn::make('monto_maximo')->label('Max ticket')->money('PEN'),
                 TextColumn::make('tickets_count')->label('Tickets')->counts('tickets'),
                 ToggleColumn::make('activo')->label('Activa'),
             ])
             ->filters([])
-            ->actions([EditAction::make()])
-            ->bulkActions([
-                BulkActionGroup::make([DeleteBulkAction::make()]),
-            ]);
+            ->actions([EditAction::make()]);
     }
 }
