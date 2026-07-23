@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Tenants\Tables;
 
+use App\Models\Tenant;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Session;
 
 class TenantsTable
 {
@@ -27,11 +30,22 @@ class TenantsTable
                         default => 'gray',
                     }),
                 TextColumn::make('mrr')->label('MRR')->money('PEN'),
+                TextColumn::make('max_cajas')->label('Cajas'),
                 TextColumn::make('max_users')->label('Usuarios'),
                 ToggleColumn::make('activo')->label('Activo'),
             ])
             ->filters([])
-            ->actions([EditAction::make()])
+            ->actions([
+                Action::make('entrar')
+                    ->label('Entrar')
+                    ->icon('heroicon-m-arrow-right-end-on-rectangle')
+                    ->color('success')
+                    ->action(function (Tenant $record) {
+                        Session::put('tenant_id', $record->id);
+                        return redirect()->to('/dashboard?tenant=' . $record->slug);
+                    }),
+                EditAction::make(),
+            ])
             ->bulkActions([
                 BulkActionGroup::make([DeleteBulkAction::make()]),
             ]);

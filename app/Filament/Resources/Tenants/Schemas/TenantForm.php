@@ -26,6 +26,7 @@ class TenantForm
                     ->options(['trial' => 'Trial', 'starter' => 'Starter', 'professional' => 'Professional', 'enterprise' => 'Enterprise']),
                 TextInput::make('mrr')->label('MRR')->numeric()->prefix('S/'),
                 TextInput::make('max_users')->label('Max usuarios')->numeric()->default(10),
+                TextInput::make('max_cajas')->label('Max cajas')->numeric()->default(3)->helperText('Cantidad maxima de cajas que puede crear este tenant'),
                 TextInput::make('storage_limit')->label('Limite almacenamiento (MB)')->numeric()->default(1024),
                 Toggle::make('activo')->label('Activo')->default(true),
                 Toggle::make('maintenance_mode')->label('Modo mantenimiento'),
