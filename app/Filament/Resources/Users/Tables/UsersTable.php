@@ -13,7 +13,10 @@ class UsersTable
 {
     public static function configure(Table $table): Table
     {
+        $tenantId = session('impersonating_tenant_id');
+
         return $table
+            ->modifyQueryUsing(fn ($query) => $tenantId ? $query->where('tenant_id', $tenantId) : $query)
             ->columns([
                 TextColumn::make('name')->label('Nombre')->sortable()->searchable(),
                 TextColumn::make('email')->label('Email')->sortable()->searchable(),
