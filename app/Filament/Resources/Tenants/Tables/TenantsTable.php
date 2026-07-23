@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class TenantsTable
@@ -14,38 +15,25 @@ class TenantsTable
     {
         return $table
             ->columns([
-                TextColumn::make('activo')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('mrr')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('storage_limit')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('storage_used')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('max_users')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('maintenance_mode')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('name')->label('Tenant')->sortable()->searchable(),
+                TextColumn::make('slug')->label('Slug')->sortable()->searchable(),
+                TextColumn::make('plan')->label('Plan')->badge(),
+                TextColumn::make('status')->label('Estado')->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'active' => 'success',
+                        'suspended' => 'danger',
+                        'trial' => 'warning',
+                        'cancelled' => 'gray',
+                        default => 'gray',
+                    }),
+                TextColumn::make('mrr')->label('MRR')->money('PEN'),
+                TextColumn::make('max_users')->label('Usuarios'),
+                ToggleColumn::make('activo')->label('Activo'),
             ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+            ->filters([])
+            ->actions([EditAction::make()])
+            ->bulkActions([
+                BulkActionGroup::make([DeleteBulkAction::make()]),
             ]);
     }
 }
