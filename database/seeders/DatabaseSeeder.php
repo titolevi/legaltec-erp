@@ -2,24 +2,37 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Crear tenant padre: Legal Tecnologías
+        $legaltec = Tenant::firstOrCreate(
+            ['slug' => 'legaltec'],
+            [
+                'name' => 'Legal Tecnologías',
+                'status' => 'active',
+                'plan' => 'enterprise',
+                'max_users' => 100,
+                'max_cajas' => 10,
+                'activo' => true,
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Crear super admin si no existe
+        User::firstOrCreate(
+            ['email' => 'daniel@legaltecnologias.pe'],
+            [
+                'name' => 'Daniel León',
+                'password' => bcrypt('admin123'),
+                'rol' => 'super_admin',
+                'tenant_id' => $legaltec->id,
+                'activo' => true,
+            ]
+        );
     }
 }
