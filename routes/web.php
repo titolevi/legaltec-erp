@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome');
 
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-    return redirect()->route('admin.dashboard');
-})->name('dashboard')->middleware(['auth']);
+    // Dashboard (redirige a Filament)
+    // Nota: Filament ya maneja /dashboard, no crear conflicto
 
     // Logout (Breeze/Volt no define ruta con nombre)
     Route::post('/logout', function () {
