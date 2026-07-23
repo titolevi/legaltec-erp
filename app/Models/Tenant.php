@@ -15,6 +15,17 @@ class Tenant extends Model
         'logo',
         'activo',
         'config',
+        'status',
+        'plan',
+        'mrr',
+        'max_users',
+        'max_cajas',
+        'storage_limit',
+        'storage_used',
+        'maintenance_mode',
+        'maintenance_message',
+        'notas',
+        'created_by',
     ];
 
     protected function casts(): array
