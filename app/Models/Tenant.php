@@ -41,6 +41,11 @@ class Tenant extends Model
         return $this->hasMany(User::class);
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function clientes(): HasMany
     {
         return $this->hasMany(Cliente::class);
