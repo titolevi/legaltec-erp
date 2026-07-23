@@ -21,8 +21,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/tenant/{slug}', function ($slug) {
         $tenant = \App\Models\Tenant::where('slug', $slug)->firstOrFail();
         session(['impersonating_tenant_id' => $tenant->id]);
+        session(['current_tenant' => $tenant->slug]);
         return redirect('/dashboard');
     })->name('tenant.enter');
+
+    // Salir del tenant y volver al panel principal
+    Route::get('/dashboard/tenant/salir', function () {
+        session()->forget(['impersonating_tenant_id', 'current_tenant']);
+        return redirect('/dashboard');
+    })->name('tenant.exit');
 
     // Admin → Solo super_admin y admin
     Route::prefix('admin')->name('admin.')->middleware(['role:super_admin,admin'])->group(function () {
