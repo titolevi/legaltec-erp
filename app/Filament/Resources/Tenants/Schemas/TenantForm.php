@@ -15,8 +15,14 @@ class TenantForm
         return $schema
             ->columns(2)
             ->components([
-                TextInput::make('name')->label('Nombre')->required(),
-                TextInput::make('slug')->label('Slug')->required()->unique(ignoreRecord: true),
+                TextInput::make('name')->label('Nombre')->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', str($state)->slug())),
+                TextInput::make('slug')->label('Subdominio')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->helperText('Ej: viera → viera.legaltec.pe')
+                    ->suffix('.legaltec.pe'),
                 TextInput::make('ruc')->label('RUC'),
                 TextInput::make('email')->label('Email')->email(),
                 Select::make('status')->label('Estado')

@@ -19,7 +19,10 @@ class TenantsTable
         return $table
             ->columns([
                 TextColumn::make('name')->label('Tenant')->sortable()->searchable(),
-                TextColumn::make('slug')->label('Slug')->sortable()->searchable(),
+                TextColumn::make('slug')->label('Subdominio')
+                    ->formatStateUsing(fn ($state) => $state . '.legaltec.pe')
+                    ->url(fn ($state) => 'http://' . $state . '.legaltec.pe')
+                    ->openUrlInNewTab(),
                 TextColumn::make('plan')->label('Plan')->badge(),
                 TextColumn::make('status')->label('Estado')->badge()
                     ->color(fn ($state) => match ($state) {
