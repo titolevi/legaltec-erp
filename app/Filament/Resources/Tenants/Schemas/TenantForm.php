@@ -6,6 +6,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Fieldset;
 use Filament\Schemas\Schema;
 
 class TenantForm
@@ -37,6 +38,16 @@ class TenantForm
                 Toggle::make('activo')->label('Activo')->default(true),
                 Toggle::make('maintenance_mode')->label('Modo mantenimiento'),
                 Textarea::make('notas')->label('Notas')->columnSpanFull(),
+
+                // Campos solo para creacion (admin del tenant)
+                \Filament\Forms\Components\Fieldset::make('admin_data')
+                    ->label('Usuario administrador del tenant')
+                    ->visible(fn ($context) => $context === 'create')
+                    ->schema([
+                        TextInput::make('admin_name')->label('Nombre del admin')->required(),
+                        TextInput::make('admin_email')->label('Email del admin')->required()->email(),
+                        TextInput::make('admin_password')->label('Contrasena')->password()->required(),
+                    ])->columns(3),
             ]);
     }
 }
