@@ -19,6 +19,13 @@ Route::middleware(['auth'])->group(function () {
         return redirect('/');
     })->name('logout');
 
+    // Entrar a un tenant (contexto multi-tenant)
+    Route::get('/panel/tenant/{slug}', function ($slug) {
+        $tenant = \App\Models\Tenant::where('slug', $slug)->firstOrFail();
+        session(['impersonating_tenant_id' => $tenant->id]);
+        return redirect('/panel');
+    })->name('tenant.enter');
+
     // Admin → Solo super_admin y admin
     Route::prefix('admin')->name('admin.')->middleware(['role:super_admin,admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');

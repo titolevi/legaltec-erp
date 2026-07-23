@@ -41,8 +41,8 @@ class TenantsTable
                     ->icon('heroicon-m-arrow-right-end-on-rectangle')
                     ->color('success')
                     ->action(function (Tenant $record) {
-                        Session::put('tenant_id', $record->id);
-                        return redirect()->to('/dashboard?tenant=' . $record->slug);
+                        session(['impersonating_tenant_id' => $record->id]);
+                        return redirect()->to('/panel/tenant/' . $record->slug);
                     }),
                 EditAction::make(),
             ])
