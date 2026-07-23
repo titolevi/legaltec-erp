@@ -11,6 +11,11 @@ class CreateCaja extends CreateRecord
 {
     protected static string $resource = CajaResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function beforeCreate(): void
     {
         $tenantId = auth()->user()->tenant_id ?? session('impersonating_tenant_id');
@@ -30,7 +35,6 @@ class CreateCaja extends CreateRecord
                 ->body("Este tenant solo puede tener {$tenant->max_cajas} cajas como maximo.")
                 ->danger()
                 ->send();
-
             $this->halt();
         }
     }
