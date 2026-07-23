@@ -99,6 +99,7 @@
                 </td>
             </tr>
             <?php endif; ?>
+        <?php endif; ?>
         </tbody>
     </table>
     <?php if($users->hasPages()): ?>
