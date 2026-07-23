@@ -7,7 +7,6 @@
     <p class="text-gray-500 dark:text-gray-400">Administra usuarios y roles del sistema</p>
 </div>
 
-
 <!-- Filtros (solo super_admin) -->
 @if(auth()->user()->esSuperAdmin() && $tenants->isNotEmpty())
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
@@ -32,6 +31,7 @@
         <a href="{{ route('admin.users') }}" class="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg text-sm hover:bg-gray-400 dark:hover:bg-gray-500">Limpiar</a>
     </form>
 </div>
+@endif
 
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -54,23 +54,30 @@
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @forelse($users as $u)
+            @php
+                $roleColors = [
+                    'super_admin' => 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200',
+                    'support_admin' => 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
+                    'support_agent' => 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200',
+                    'admin' => 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200',
+                    'autorizador' => 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200',
+                    'cajero' => 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+                ];
+                $rolColor = $roleColors[$u->rol] ?? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
+            @endphp
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">{{ $u->name }}</td>
                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $u->email }}</td>
                 <td class="px-4 py-3">
-                    <span class="px-2 py-1 text-xs rounded-full
-                        @if($u->rol == 'super_admin') bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200
-                        @elseif($u->rol == 'support_admin' || $u->rol == 'support_agent') bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200
-                        @elseif($u->rol == 'admin') bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200
-                        @elseif($u->rol == 'autorizador') bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200
-                        @elseif($u->rol == 'cajero') bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200
+                    <span class="px-2 py-1 text-xs rounded-full {{ $rolColor }}">
                         {{ ucfirst(str_replace('_', ' ', $u->rol)) }}
                     </span>
                 </td>
                 @if(auth()->user()->esSuperAdmin())
                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $u->tenant?->name ?? '—' }}</td>
                 <td class="px-4 py-3">
-                    <span class="px-2 py-1 text-xs rounded-full {{ $u->activo ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' }}">
+                    @php $estadoColor = $u->activo ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'; @endphp
+                    <span class="px-2 py-1 text-xs rounded-full {{ $estadoColor }}">
                         {{ $u->activo ? 'Activo' : 'Inactivo' }}
                     </span>
                 </td>
@@ -81,7 +88,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="{{ auth()->user()->esSuperAdmin() ? 7 : 6 }}" class="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
+                <td colspan="{{ auth()->user()->esSuperAdmin() ? 7 : 4 }}" class="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
                     <div class="text-4xl mb-2">👤</div>
                     <p>No hay usuarios registrados</p>
                 </td>
@@ -93,5 +100,6 @@
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         {{ $users->links() }}
     </div>
+    @endif
 </div>
 @endsection

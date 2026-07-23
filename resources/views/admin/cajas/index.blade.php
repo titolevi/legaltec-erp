@@ -66,5 +66,6 @@
     </table>
     @if($cajas->hasPages())
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">{{ $cajas->links() }}</div>
+    @endif
 </div>
 @endsection
