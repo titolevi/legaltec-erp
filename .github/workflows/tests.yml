@@ -43,6 +43,8 @@ jobs:
         run: |
           cp .env.example .env 2>/dev/null || true
           php -r "file_exists('.env') || copy('.env.example', '.env');"
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
 
       - name: Generate app key
         run: php artisan key:generate --force
