@@ -1,58 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Legaltec ERP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> **SaaS multi-tenant** para estudios de abogados — Gestión de cajas, facturación electrónica, clientes y asuntos.
 
-## About Laravel
+[![Tests](https://github.com/titolevi/legaltec-erp/actions/workflows/tests.yml/badge.svg)](https://github.com/titolevi/legaltec-erp/actions/workflows/tests.yml)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel)](https://laravel.com)
+[![Filament](https://img.shields.io/badge/Filament-4.12-EA580C?logo=filament)](https://filamentphp.com)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Componente | Tecnología |
+|---|---|
+| **Backend** | Laravel 13 + PHP 8.4 |
+| **Panel Admin** | FilamentPHP 4.12 |
+| **Frontend** | Livewire 4 + Tailwind CSS |
+| **Base de datos** | MySQL (producción), SQLite (testing) |
 
-## Learning Laravel
+## Módulos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- ✅ **Multi-tenant** por subdominio (`tenant.legaltec.pe`)
+- ✅ **Tenants** — CRUD con slug auto-generado y subdominio
+- ✅ **Usuarios** — Roles: super_admin, admin, autorizador, cajero, usuario
+- ✅ **Cajas** — Con autorización, moneda USD/PEN, monto máximo por ticket
+- ✅ **Solicitudes** — Flujo: usuario → autorizador → cajero
+- 🟡 **Clientes y Asuntos** — En desarrollo
+- 🔴 **Facturación SUNAT** — Pendiente
+- 🔴 **Time Manager / Time Billing** — Pendiente
+- 🔴 **NetDocuments** — Pendiente
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Arquitectura
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+legaltec.pe              → Super Admin
+├── viera.legaltec.pe    → Viera Abogados
+├── acb.legaltec.pe      → ACB Abogados
+└── [cliente].legaltec.pe → Nuevo cliente
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Desarrollo local
 
-## Contributing
+```bash
+git clone https://github.com/titolevi/legaltec-erp.git
+cd legaltec-erp
+composer install
+cp .env.testing .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Tests
 
-## Code of Conduct
+```bash
+php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+[![Tests](https://github.com/titolevi/legaltec-erp/actions/workflows/tests.yml/badge.svg)](https://github.com/titolevi/legaltec-erp/actions/workflows/tests.yml)
 
-## Security Vulnerabilities
+## Licencia
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT — Legal Tecnologías
