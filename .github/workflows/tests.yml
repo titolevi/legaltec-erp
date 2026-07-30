@@ -39,7 +39,8 @@ jobs:
         run: |
           cp .env.testing .env
           touch database/database.sqlite
-          php artisan key:generate --force
+          mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions bootstrap/cache
+          php artisan key:generate --force 2>&1
           echo "✅ .env created"
 
       - name: Run migrations
