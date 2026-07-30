@@ -37,9 +37,11 @@ jobs:
 
       - name: Prepare testing environment
         run: |
-          cp .env.testing .env
           touch database/database.sqlite
-          php artisan key:generate --force
+          echo "APP_KEY=base64:$(openssl rand -base64 32)" > .env
+          cat .env.testing >> .env
+          echo "" >> .env
+          echo "✅ .env created"
 
       - name: Run migrations
         run: php artisan migrate --force
