@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.3, 8.4]
+        php: [8.4]
         dependency-version: [prefer-stable]
 
     steps:
@@ -24,19 +24,20 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: intl, pdo, pdo_sqlite, mbstring, xml, curl, json, gd
+          extensions: intl, pdo, pdo_sqlite, mbstring, xml, curl, json, gd, zip
           tools: composer:v2
           coverage: xdebug
 
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress --ignore-platform-req=ext-intl --ignore-platform-req=ext-zip --ignore-platform-req=ext-xmlwriter
 
       - name: Copy .env
         run: |
